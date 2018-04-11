@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Fleck
 {
@@ -195,21 +196,25 @@ namespace Fleck
 
 			if (e is HandshakeException)
 			{
-				FleckLog.Debug("Error while reading", e);
+				if (FleckLog.Logger.IsEnabled(LogLevel.Debug))
+					FleckLog.Debug("Error while reading", e);
 			}
 			else if (e is WebSocketException)
 			{
-				FleckLog.Debug("Error while reading", e);
+				if (FleckLog.Logger.IsEnabled(LogLevel.Debug))
+					FleckLog.Debug("Error while reading", e);
 				Close(((WebSocketException)e).StatusCode);
 			}
 			else if (e is SubProtocolNegotiationFailureException)
 			{
-				FleckLog.Debug(e.Message);
+				if (FleckLog.Logger.IsEnabled(LogLevel.Debug))
+					FleckLog.Debug(e.Message, e);
 				Close(WebSocketStatusCodes.ProtocolError);
 			}
 			else if (e is IOException)
 			{
-				FleckLog.Debug("Error while reading", e);
+				if (FleckLog.Logger.IsEnabled(LogLevel.Debug))
+					FleckLog.Debug("Error while reading", e);
 				Close(WebSocketStatusCodes.AbnormalClosure);
 			}
 			else

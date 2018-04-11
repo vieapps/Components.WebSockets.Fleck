@@ -140,7 +140,7 @@ namespace Fleck
 
 			if (IsSecure)
 			{
-				FleckLog.Debug("Attempting to secure connection...");
+				FleckLog.Trace("Attempting to secure connection...");
 				clientSocket.Authenticate(Certificate, EnabledSslProtocols, connection.StartReceiving, e => FleckLog.Error($"Cannot secure the connection: {e.Message}", e));
 			}
 			else
