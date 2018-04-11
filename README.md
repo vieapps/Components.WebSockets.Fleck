@@ -8,8 +8,8 @@ This is a hard fork of [Fleck](https://github.com/statianzo/Fleck) (a WebSocket 
 
 ## Modifications (compare to original Fleck)
 - Allow to SetKeepAlive method only run on Windows (SocketWrapper class)
-- Change to use Microsoft.Extensions.Logging instead of FleckLog
-- Listen to 1000 pending connections
+- Change to use Microsoft.Extensions.Logging
+- Listen to 1000 pending connections (default) - and you can change this backlog number when start the server
 
 ## Documentation
 Please see the document of original Fleck at https://github.com/statianzo/Fleck

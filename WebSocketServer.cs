@@ -71,9 +71,13 @@ namespace Fleck
 
 		public void Start(Action<IWebSocketConnection> config)
 		{
-			var ipLocal = new IPEndPoint(_locationIP, Port);
-			ListenerSocket.Bind(ipLocal);
-			ListenerSocket.Listen(1000);
+			this.Start(config, 1000);
+		}
+
+		public void Start(Action<IWebSocketConnection> config, int backlog)
+		{
+			ListenerSocket.Bind(new IPEndPoint(_locationIP, Port));
+			ListenerSocket.Listen(backlog);
 			Port = ((IPEndPoint)ListenerSocket.LocalEndPoint).Port;
 			if (_scheme == "wss")
 			{
