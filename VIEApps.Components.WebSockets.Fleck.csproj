@@ -19,7 +19,7 @@
 		<Title>VIEApps NGX WebSockets Fleck </Title>
 		<Description>The high performance WebSocket server on .NET Standard 2.0  (Fleck fork)</Description>
 		<Authors>VIEApps.net</Authors>
-		<Copyright>© 2011 Jason Staten, © 2018 VIEApps.net</Copyright>
+		<Copyright>© 2010-2018 Jason Staten, © 2018 VIEApps.net</Copyright>
 		<PackageTags>websocket;websockets;websocket server;fleck;fleck websocket server;vieapps;vieapps.components</PackageTags>
 		<PackageProjectUrl>https://github.com/vieapps/Components.WebSockets.Fleck</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/vieapps/Components.WebSockets.Fleck</RepositoryUrl>
