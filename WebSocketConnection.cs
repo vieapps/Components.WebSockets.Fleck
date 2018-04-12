@@ -25,18 +25,27 @@ namespace Fleck
 			_negotiateSubProtocol = negotiateSubProtocol;
 		}
 
+		static int _BufferLength = 1024 * 4;
+
+		public static int BufferLength { get { return WebSocketConnection._BufferLength; } }
+
+		public static void SetBufferLength(int length = 4096)
+		{
+			if (length > 0)
+				WebSocketConnection._BufferLength = length;
+		}
+
 		public ISocket Socket { get; set; }
 
-		private readonly Action<IWebSocketConnection> _initialize;
-		private readonly Func<WebSocketHttpRequest, IHandler> _handlerFactory;
-		private readonly Func<IEnumerable<string>, string> _negotiateSubProtocol;
+		readonly Action<IWebSocketConnection> _initialize;
+		readonly Func<WebSocketHttpRequest, IHandler> _handlerFactory;
+		readonly Func<IEnumerable<string>, string> _negotiateSubProtocol;
 		readonly Func<byte[], WebSocketHttpRequest> _parseRequest;
 
 		public IHandler Handler { get; set; }
 
-		private bool _closing;
-		private bool _closed;
-		private const int ReadSize = 1024 * 4;
+		bool _closing;
+		bool _closed;
 
 		public Action OnOpen { get; set; }
 
@@ -52,7 +61,7 @@ namespace Fleck
 
 		public Action<Exception> OnError { get; set; }
 
-		public IWebSocketConnectionInfo ConnectionInfo { get; private set; }
+		public IWebSocketConnectionInfo ConnectionInfo { get; set; }
 
 		public bool IsAvailable
 		{
@@ -79,7 +88,7 @@ namespace Fleck
 			return Send(message, Handler.FramePong);
 		}
 
-		private Task Send<T>(T message, Func<T, byte[]> createFrame)
+		Task Send<T>(T message, Func<T, byte[]> createFrame)
 		{
 			if (Handler == null)
 				throw new InvalidOperationException("Cannot send before handshake");
@@ -88,10 +97,7 @@ namespace Fleck
 			{
 				const string errorMessage = "Data sent while closing or after close. Ignoring.";
 				FleckLog.Warn(errorMessage);
-
-				var taskForException = new TaskCompletionSource<object>();
-				taskForException.SetException(new ConnectionNotAvailableException(errorMessage));
-				return taskForException.Task;
+				return Task.FromException<T>(new ConnectionNotAvailableException(errorMessage));
 			}
 
 			var bytes = createFrame(message);
@@ -100,8 +106,8 @@ namespace Fleck
 
 		public void StartReceiving()
 		{
-			var data = new List<byte>(ReadSize);
-			var buffer = new byte[ReadSize];
+			var data = new List<byte>(WebSocketConnection.BufferLength);
+			var buffer = new byte[WebSocketConnection.BufferLength];
 			Read(data, buffer);
 		}
 
@@ -147,7 +153,7 @@ namespace Fleck
 			SendBytes(handshake, OnOpen);
 		}
 
-		private void Read(List<byte> data, byte[] buffer)
+		void Read(List<byte> data, byte[] buffer)
 		{
 			if (!IsAvailable)
 				return;
@@ -172,17 +178,21 @@ namespace Fleck
 					CreateHandler(data);
 				}
 
+				if (!buffer.Length.Equals(WebSocketConnection.BufferLength))
+				{
+					data = new List<byte>(WebSocketConnection.BufferLength);
+					buffer = new byte[WebSocketConnection.BufferLength];
+				}
 				Read(data, buffer);
 			},
 			HandleReadError);
 		}
 
-		private void HandleReadError(Exception e)
+		void HandleReadError(Exception e)
 		{
 			if (e is AggregateException)
 			{
-				var agg = e as AggregateException;
-				HandleReadError(agg.InnerException);
+				HandleReadError((e as AggregateException).InnerException);
 				return;
 			}
 
@@ -224,7 +234,7 @@ namespace Fleck
 			}
 		}
 
-		private Task SendBytes(byte[] bytes, Action callback = null)
+		Task SendBytes(byte[] bytes, Action callback = null)
 		{
 			return Socket.Send(bytes, () =>
 			{
@@ -241,7 +251,7 @@ namespace Fleck
 			});
 		}
 
-		private void CloseSocket()
+		void CloseSocket()
 		{
 			_closing = true;
 			OnClose();
