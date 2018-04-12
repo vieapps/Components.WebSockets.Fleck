@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Fleck
 {
@@ -13,16 +13,16 @@ namespace Fleck
         public static WebSocketConnectionInfo Create(WebSocketHttpRequest request, string clientIp, int clientPort, string negotiatedSubprotocol)
         {
             var info = new WebSocketConnectionInfo
-                           {
-                               Origin = request["Origin"] ?? request["Sec-WebSocket-Origin"],
-                               Host = request["Host"],
-                               SubProtocol = request["Sec-WebSocket-Protocol"],
-                               Path = request.Path,
-                               ClientIpAddress = clientIp,
-                               ClientPort = clientPort,
-                               NegotiatedSubProtocol = negotiatedSubprotocol,
-                               Headers = new Dictionary<string, string>(request.Headers, System.StringComparer.InvariantCultureIgnoreCase)
-                           };
+            {
+                Origin = request["Origin"] ?? request["Sec-WebSocket-Origin"],
+                Host = request["Host"],
+                SubProtocol = request["Sec-WebSocket-Protocol"],
+                Path = request.Path,
+                ClientIpAddress = clientIp,
+                ClientPort = clientPort,
+                NegotiatedSubProtocol = negotiatedSubprotocol,
+                Headers = new Dictionary<string, string>(request.Headers, System.StringComparer.InvariantCultureIgnoreCase)
+            };
             var cookieHeader = request["Cookie"];
 
             if (cookieHeader != null)
