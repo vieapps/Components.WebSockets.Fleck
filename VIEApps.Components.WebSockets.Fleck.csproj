@@ -20,7 +20,7 @@
 		<Description>The WebSocket server on .NET Standard 2.0  (a hard fork of Fleck)</Description>
 		<Authors>VIEApps.net</Authors>
 		<Copyright>© 2010-2018 Jason Staten, © 2018 VIEApps.net</Copyright>
-		<PackageTags>websocket;websockets;websocket server;fleck;fleck websocket server;vieapps;vieapps.components</PackageTags>
+		<PackageTags>websocket;websockets;websocketserver;fleck;fleckwebsocketserver;vieapps;vieapps.components</PackageTags>
 		<PackageReleaseNotes>Update some default properites and add more override methods</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/vieapps/Components.WebSockets.Fleck</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/vieapps/Components.WebSockets.Fleck</RepositoryUrl>
