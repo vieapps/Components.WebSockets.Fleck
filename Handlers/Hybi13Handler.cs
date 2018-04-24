@@ -15,10 +15,10 @@ namespace Fleck.Handlers
 			return new ComposableHandler
 			{
 				Handshake = sub => Hybi13Handler.BuildHandshake(request, sub),
-				TextFrame = s => Hybi13Handler.FrameData(Encoding.UTF8.GetBytes(s), FrameType.Text),
-				BinaryFrame = s => Hybi13Handler.FrameData(s, FrameType.Binary),
-				PingFrame = s => Hybi13Handler.FrameData(s, FrameType.Ping),
-				PongFrame = s => Hybi13Handler.FrameData(s, FrameType.Pong),
+				TextFrame = msg => Hybi13Handler.FrameData(Encoding.UTF8.GetBytes(msg), FrameType.Text),
+				BinaryFrame = msg => Hybi13Handler.FrameData(msg, FrameType.Binary),
+				PingFrame = bin => Hybi13Handler.FrameData(bin, FrameType.Ping),
+				PongFrame = bin => Hybi13Handler.FrameData(bin, FrameType.Pong),
 				CloseFrame = i => Hybi13Handler.FrameData(i.ToBigEndianBytes<ushort>(), FrameType.Close),
 				ReceiveData = d => Hybi13Handler.ReceiveData(d, readState, (op, data) => Hybi13Handler.ProcessFrame(op, data, onMessage, onClose, onBinary, onPing, onPong))
 			};
@@ -55,7 +55,6 @@ namespace Fleck.Handlers
 
 		public static void ReceiveData(List<byte> data, ReadState readState, Action<FrameType, byte[]> processFrame)
 		{
-
 			while (data.Count >= 2)
 			{
 				var isFinal = (data[0] & 128) != 0;
@@ -63,7 +62,6 @@ namespace Fleck.Handlers
 				var frameType = (FrameType)(data[0] & 15);
 				var isMasked = (data[1] & 128) != 0;
 				var length = (data[1] & 127);
-
 
 				if (!isMasked
 					|| !Enum.IsDefined(typeof(FrameType), frameType)
@@ -105,10 +103,9 @@ namespace Fleck.Handlers
 					return; //Not complete
 
 				var payload = data
-								.Skip(index)
-								.Take(payloadLength)
-								.Select((x, i) => (byte)(x ^ maskBytes[i % 4]));
-
+					.Skip(index)
+					.Take(payloadLength)
+					.Select((x, i) => (byte)(x ^ maskBytes[i % 4]));
 
 				readState.Data.AddRange(payload);
 				data.RemoveRange(0, index + payloadLength);
@@ -143,7 +140,7 @@ namespace Fleck.Handlers
 					}
 
 					if (data.Length > 2)
-						ReadUTF8PayloadData(data.Skip(2).ToArray());
+						Hybi13Handler.ReadUTF8PayloadData(data.Skip(2).ToArray());
 
 					onClose();
 					break;
@@ -161,11 +158,11 @@ namespace Fleck.Handlers
 					break;
 
 				case FrameType.Text:
-					onMessage(ReadUTF8PayloadData(data));
+					onMessage(Hybi13Handler.ReadUTF8PayloadData(data));
 					break;
 
 				default:
-					FleckLog.Warn("Received unhandled " + frameType);
+					FleckLog.Warn($"Received unhandled {frameType}");
 					break;
 			}
 		}
@@ -189,18 +186,15 @@ namespace Fleck.Handlers
 			return Encoding.ASCII.GetBytes(builder.ToString());
 		}
 
-		private const string WebSocketResponseGuid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
 		public static string CreateResponseKey(string requestKey)
 		{
-			var combined = requestKey + WebSocketResponseGuid;
-
-			var bytes = SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(combined));
-
-			return Convert.ToBase64String(bytes);
+			using (var hasher = SHA1.Create())
+			{
+				return Convert.ToBase64String(hasher.ComputeHash(Encoding.ASCII.GetBytes(requestKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
+			}
 		}
 
-		private static string ReadUTF8PayloadData(byte[] bytes)
+		static string ReadUTF8PayloadData(byte[] bytes)
 		{
 			var encoding = new UTF8Encoding(false, true);
 			try
