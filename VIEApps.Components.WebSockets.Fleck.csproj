@@ -5,23 +5,23 @@
 		<RootNamespace>Fleck</RootNamespace>
 		<AssemblyName>VIEApps.Components.WebSockets.Fleck</AssemblyName>
 		<AssemblyTitle>Fleck WebSocket Server on .NET Standard 2.0</AssemblyTitle>
-		<AssemblyVersion>10.1.18.1805</AssemblyVersion>
-		<FileVersion>10.1.18.1805</FileVersion>
-		<InformationalVersion>v1.0.netstandard-2+rev:2018.05.01</InformationalVersion>
+		<AssemblyVersion>10.2.1.1805</AssemblyVersion>
+		<FileVersion>10.2.1.1805</FileVersion>
+		<InformationalVersion>v10.2.netstandard-2+rev:2018.05.07</InformationalVersion>
 		<Product>VIEApps NGX</Product>
 		<Company>VIEApps.net</Company>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageId>VIEApps.Components.WebSockets.Fleck</PackageId>
-		<Version>10.1.18.1805</Version>
+		<Version>10.2.1.1805</Version>
 		<SignAssembly>false</SignAssembly>
 		<DelaySign>false</DelaySign>
 		<AssemblyOriginatorKeyFile>../VIEApps.Components.snk</AssemblyOriginatorKeyFile>
 		<Title>VIEApps NGX WebSockets Fleck </Title>
-		<Description>The high performance WebSocket Server on .NET Standard 2.0  (a hard fork of Fleck)</Description>
+		<Description>The fork of Fleck WebSocket Server on .NET Standard 2.0</Description>
 		<Authors>VIEApps.net</Authors>
 		<Copyright>© 2010-2018 Jason Staten, © 2018 VIEApps.net</Copyright>
-		<PackageTags>websocket;websockets;websocketserver;fleck;fleckwebsocketserver;vieapps;vieapps.components</PackageTags>
-		<PackageReleaseNotes>Refactoring</PackageReleaseNotes>
+		<PackageTags>websocket;websockets;websocket-server;fleck;fleck-websocket-server;vieapps;vieapps.components</PackageTags>
+		<PackageReleaseNotes>Improvement</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/vieapps/Components.WebSockets.Fleck</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/vieapps/Components.WebSockets.Fleck</RepositoryUrl>
 	</PropertyGroup>

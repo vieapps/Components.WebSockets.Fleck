@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fleck
 {
@@ -85,37 +86,6 @@ namespace Fleck
 		{
 			return Logger.CreateLogger(typeof(T));
 		}
-	}
-	#endregion
-
-	#region NullLogger
-
-	public class NullLoggerFactory : ILoggerFactory
-	{
-		public void AddProvider(ILoggerProvider provider) { }
-
-		public ILogger CreateLogger(string categoryName)
-		{
-			return NullLogger.Instance;
-		}
-
-		public void Dispose() { }
-	}
-
-	public class NullLogger : ILogger
-	{
-		internal static NullLogger Instance = new NullLogger();
-
-		private NullLogger() { }
-
-		public IDisposable BeginScope<TState>(TState state) { return null; }
-
-		public bool IsEnabled(LogLevel logLevel)
-		{
-			return false;
-		}
-
-		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) { }
 	}
 	#endregion
 
