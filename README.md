@@ -1,5 +1,11 @@
 ﻿# VIEApps.Components.WebSockets.Fleck
 
+DEPRECATED
+
+.NET Standard 2.0 is supported by the original [Fleck](https://github.com/statianzo/Fleck).
+
+---------
+
 This is a hard fork of [Fleck](https://github.com/statianzo/Fleck) (a WebSocket server implementation in C#) with some modifications to run well on .NET Standard 2.0
 
 ## NuGet
